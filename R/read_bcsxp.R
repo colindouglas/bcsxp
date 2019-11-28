@@ -49,6 +49,6 @@ read_bcsxp <- function(path, include_subassays = FALSE) {
   )
 
   # Reorder the columns
-  assays_clean_narrow <- dplyr::select(assays_clean, datetime, dplyr::everything(), subassays, -sample_date, -sample_time, -unknown1, -unknown2, -units2)
+  assays_clean_narrow <- dplyr::select(assays_clean, datetime, dplyr::everything(), -sample_date, -sample_time, -unknown1, -unknown2, -units2)
   return(assays_clean_narrow)
 }
