@@ -49,8 +49,9 @@ read_curves <- function(chunks, header) {
 
   curves_clean <- dplyr::mutate(curves,
                                 datetime = lubridate::dmy_hms(paste(curve_date, curve_time)),
+                                instrument = paste(header$instrument, header$serial),
                                 filename = header$path)
-  curves_clean <- dplyr::select(curves_clean, datetime, dplyr::everything())
+  curves_clean <- dplyr::select(curves_clean, datetime, dplyr::everything(), -curve_date, -curve_time, -units2, -repeats)
   curves_clean <- dplyr::select(curves_clean, -points, dplyr::everything(), points)
 
   return(curves_clean)
