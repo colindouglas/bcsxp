@@ -3,7 +3,7 @@
 #' This function reads an ASCII-formated sample export file ("S-files") from a BCS XP coagulation analyzer
 #' and returns the assay results into a tidy tibble.
 #' @param path Path to the *.BCSXp file
-#' @param include_subassays Whether to include the subassays. Adds a subassay list column to the output. Defaults to FALSE
+#' @param include_subassays Adds a subassay list column to the output. Defaults to FALSE
 #' @keywords BCS XP coagulation analyzer
 #' @export
 #' @examples
@@ -49,6 +49,10 @@ read_bcsxp <- function(path, include_subassays = FALSE) {
   )
 
   # Reorder the columns
-  assays_clean_narrow <- dplyr::select(assays_clean, datetime, dplyr::everything(), -sample_date, -sample_time, -unknown1, -unknown2, -units2)
-  return(assays_clean_narrow)
+  assays_clean <- dplyr::select(assays_clean, datetime, dplyr::everything(), -sample_date, -sample_time, -unknown1, -unknown2, -units2)
+  if (include_subassays) {
+    assays_clean <- dplyr::select(assays_clean, -subassays, dplyr::everything(), subassays)
+  }
+
+  return(assays_clean)
 }

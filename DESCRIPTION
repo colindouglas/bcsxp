@@ -16,3 +16,5 @@ Imports:
         stringr,
         lubridate
 RoxygenNote: 7.0.1
+Suggests: 
+    testthat (>= 2.1.0)
