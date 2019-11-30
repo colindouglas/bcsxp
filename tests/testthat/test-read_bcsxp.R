@@ -46,3 +46,11 @@ test_that("loading test file #2 returns right number of columns without subassay
     ),
     14)
 })
+
+test_that("loading test file #3 returns right number of rows", {
+  expect_equal(
+    nrow(
+      read_bcsxp(path = "../data/C201712072.BCSXp", include_subassays = FALSE)
+    ),
+    65)
+})

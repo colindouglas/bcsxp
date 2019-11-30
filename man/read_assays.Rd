@@ -2,12 +2,14 @@
 % Please edit documentation in R/read_assays.R
 \name{read_assays}
 \alias{read_assays}
-\title{Read a BCS XP data file}
+\title{Read a BCS XP S-file file}
 \usage{
-read_assays(chunks, include_subassays = FALSE, version)
+read_assays(chunks, include_subassays = FALSE, header)
 }
 \arguments{
 \item{include_subassays}{Adds a subassay list column to the output. Defaults to FALSE}
+
+\item{header}{Manually pass along the file header so it's details can be returned}
 
 \item{path}{Path to the *.BCSXp file}
 }

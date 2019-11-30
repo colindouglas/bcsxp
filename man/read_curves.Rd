@@ -2,12 +2,12 @@
 % Please edit documentation in R/read_curves.R
 \name{read_curves}
 \alias{read_curves}
-\title{Read a BCS XP calibration file}
+\title{Read a BCS XP C-file file}
 \usage{
-read_curves(chunks, include_subassays = FALSE)
+read_curves(chunks, header)
 }
 \arguments{
-\item{include_subassays}{Adds a subassay list column to the output. Defaults to FALSE}
+\item{header}{Manually pass along the file header so it's details can be returned}
 
 \item{path}{Path to the *.BCSXp file}
 }

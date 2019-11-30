@@ -3,6 +3,7 @@
 #' This function reads an ASCII-formated sample export file ("S-files") from a BCS XP coagulation analyzer
 #' and returns the assay results into a tidy tibble.
 #' @param path Path to the *.BCSXp file
+#' @param filetype The type of file to be read. One of c("S", "C", or "guess").
 #' @param include_subassays Adds a subassay list column to the output. Defaults to FALSE
 #' @keywords BCS XP coagulation analyzer
 #' @export
@@ -18,10 +19,35 @@ read_bcsxp <- function(path, filetype = "guess", include_subassays = FALSE) {
   }
 
   # Get file details from the header
-  version <- unlist(stringr::str_split(file[1], pattern = "\t"))
-  names(version) <- c("instrument", "file_type", "serial", "software_version", "unknown3")
-  version <- c(version, path = path)
-  version <- as.list(version)
+  header <- unlist(stringr::str_split(file[1], pattern = "\t"))
+  names(header) <- c("instrument", "filetype", "serial", "software_version", "unknown3")
+  header <- c(header, path = path)
+  header <- as.list(header)
+
+  # Guessing the type of file from the file
+  if (tolower(filetype) == "guess") {
+    # Check if the header gives the filetype
+    # Stored in the first line as the second TSV
+    firstchar_header <- tolower(
+      substring(tolower(header$filetype), first = 1, last = 1)
+    )
+
+    # If the header specifies file type, move on
+    if (firstchar_header %in% c("s", "c")) {
+      filetype <- firstchar_header
+    } else {
+      # If the header doesn't specify filetype, warn and try to guess it from the path
+      filename <- tail(stringr::str_split(path, pattern = "/")[[1]], 1)
+      firstchar_filename <- tolower(substring(filename, first = 1, last = 1))
+      if (firstchar_filename %in% c("s", "c")) {
+        filetype <- firstchar_filename
+        warning("Guessing file type from path: ", path)
+      } else {
+        # If can't guess filetype from header or path, stop.
+        stop("Unable to guess file type from header or path. Is it a *.BCSXp file?")
+      }
+    }
+  }
 
   # Which element indices are the starts of chunks
   chunk_starts <- which(sapply(file, is_chunkstart, USE.NAMES = FALSE))
@@ -37,25 +63,14 @@ read_bcsxp <- function(path, filetype = "guess", include_subassays = FALSE) {
       ]
   }
 
-  if (filetype == "guess") {
-    filename <- tail(stringr::str_split(path, pattern = "/")[[1]], 1)
-    first_char <- substring(filename, first = 1, last = 1)
-
-    if (first_char %in% c("S", "C")) {
-      filetype <- first_char
-    } else {
-      stop("Unable to guess filetype of ", filename)
-    }
-  }
-
-  if (filetype == "S") {
+  if (tolower(filetype) == "s") {
     return(
-      read_assays(chunks, include_subassays, version)
+      read_assays(chunks, include_subassays, header)
     )
   }
-  if (filetype == "C") {
+  if (tolower(filetype) == "c") {
     return(
-      read_curves(chunks, version)
+      read_curves(chunks, header)
     )
   }
 

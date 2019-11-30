@@ -9,6 +9,8 @@ read_bcsxp(path, filetype = "guess", include_subassays = FALSE)
 \arguments{
 \item{path}{Path to the *.BCSXp file}
 
+\item{filetype}{The type of file to be read. One of c("S", "C", or "guess").}
+
 \item{include_subassays}{Adds a subassay list column to the output. Defaults to FALSE}
 }
 \description{

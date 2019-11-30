@@ -1,16 +1,16 @@
-#' Read a BCS XP calibration file
+#' Read a BCS XP C-file file
 #'
 #' This function reads an ASCII-formated calibration export file ("C-files") from a BCS XP coagulation analyzer
 #' and returns the calibration data results into a tidy tibble.
 #' @param path Path to the *.BCSXp file
-#' @param include_subassays Adds a subassay list column to the output. Defaults to FALSE
+#' @param header Manually pass along the file header so it's details can be returned
 #' @keywords BCS XP coagulation analyzer
 #' @export
 #' @examples
 #' read_curve(path = "data/C201911271.BCSXp", include_subassays = TRUE)
 
 
-read_curves <- function(chunks, include_subassays = FALSE) {
+read_curves <- function(chunks, header) {
 
     parse_curve <- function(chunk) {
     # Store the flags separately and remove
@@ -49,7 +49,7 @@ read_curves <- function(chunks, include_subassays = FALSE) {
 
   curves_clean <- dplyr::mutate(curves,
                                 datetime = lubridate::dmy_hms(paste(curve_date, curve_time)),
-                                filename = version$path)
+                                filename = header$path)
   curves_clean <- dplyr::select(curves_clean, datetime, dplyr::everything())
   curves_clean <- dplyr::select(curves_clean, -points, dplyr::everything(), points)
 

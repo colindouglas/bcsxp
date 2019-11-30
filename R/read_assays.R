@@ -1,15 +1,16 @@
-#' Read a BCS XP data file
+#' Read a BCS XP S-file file
 #'
 #' This function reads an ASCII-formated sample export file ("S-files") from a BCS XP coagulation analyzer
 #' and returns the assay results into a tidy tibble.
 #' @param path Path to the *.BCSXp file
 #' @param include_subassays Adds a subassay list column to the output. Defaults to FALSE
+#' @param header Manually pass along the file header so it's details can be returned
 #' @keywords BCS XP coagulation analyzer
 #' @export
 #' @examples
 #' read_bcsxp(path = "data/S201911271.BCSXp", include_subassays = TRUE)
 
-read_assays <- function(chunks, include_subassays = FALSE, version) {
+read_assays <- function(chunks, include_subassays = FALSE, header) {
 
   # Parse a chunk (representing a single assay) into a tidy row
   parse_assay <- function(chunk, include_subassays = FALSE) {
@@ -58,8 +59,8 @@ read_assays <- function(chunks, include_subassays = FALSE, version) {
                                   sample_type == "C" ~ "Control",
                                   sample_type == "S" ~ "Sample",
                                   TRUE ~ as.character(NA)),
-                                instrument = paste(version$instrument, version$serial),
-                                filename = version$path
+                                instrument = paste(header$instrument, header$serial),
+                                filename = header$path
   )
 
   # Reorder the columns
