@@ -10,7 +10,7 @@
 #' read_bcsxp(path = "data/S201911271.BCSXp", include_subassays = TRUE)
 
 
-read_bcsxp <- function(path, include_subassays = FALSE) {
+read_bcsxp <- function(path, filetype = "guess", include_subassays = FALSE) {
   if (file.exists(path)) {
     file <- readLines(path, warn = FALSE) # Suppress warnings because the last line is always malformed
   } else {
@@ -36,23 +36,27 @@ read_bcsxp <- function(path, include_subassays = FALSE) {
       chunk_starts[i]:chunk_ends[i]
       ]
   }
-  # Parse the assays in each chunk
-  assays <- purrr::map_dfr(chunks, ~ parse_assay(., include_subassays))
-  assays_clean <- dplyr::mutate(assays,
-                   datetime = lubridate::dmy_hms(paste(sample_date, sample_time)),
-                   sample_type = dplyr::case_when(
-                     sample_type == "C" ~ "Control",
-                     sample_type == "S" ~ "Sample",
-                     TRUE ~ as.character(NA)),
-                   instrument = paste(version$instrument, version$serial),
-                   filename = version$path
-  )
 
-  # Reorder the columns
-  assays_clean <- dplyr::select(assays_clean, datetime, dplyr::everything(), -sample_date, -sample_time, -unknown1, -unknown2, -units2)
-  if (include_subassays) {
-    assays_clean <- dplyr::select(assays_clean, -subassays, dplyr::everything(), subassays)
+  if (filetype == "guess") {
+    filename <- tail(stringr::str_split(path, pattern = "/")[[1]], 1)
+    first_char <- substring(filename, first = 1, last = 1)
+
+    if (first_char %in% c("S", "C")) {
+      filetype <- first_char
+    } else {
+      stop("Unable to guess filetype of ", filename)
+    }
   }
 
-  return(assays_clean)
+  if (filetype == "S") {
+    return(
+      read_assays(chunks, include_subassays, version)
+    )
+  }
+  if (filetype == "C") {
+    return(
+      read_curves(chunks, version)
+    )
+  }
+
 }

@@ -1,0 +1,72 @@
+#' Read a BCS XP data file
+#'
+#' This function reads an ASCII-formated sample export file ("S-files") from a BCS XP coagulation analyzer
+#' and returns the assay results into a tidy tibble.
+#' @param path Path to the *.BCSXp file
+#' @param include_subassays Adds a subassay list column to the output. Defaults to FALSE
+#' @keywords BCS XP coagulation analyzer
+#' @export
+#' @examples
+#' read_bcsxp(path = "data/S201911271.BCSXp", include_subassays = TRUE)
+
+read_assays <- function(chunks, include_subassays = FALSE, version) {
+
+  # Parse a chunk (representing a single assay) into a tidy row
+  parse_assay <- function(chunk, include_subassays = FALSE) {
+
+    # The first line is the bulk of the data
+    assay_info <- stringr::str_split(chunk[1], pattern = "\t")[[1]]
+    names(assay_info) <- c("sample_name", "sample_type", "unknown1", "sample_date", "sample_time",
+                           "assay_number", "assay_name", "reagent_lots", "raw_unit",
+                           "result_unit", "units2", "unknown2", "raw", "calibration_curve", "result")
+    output <- as.list(assay_info)
+
+    # Second line is assay flags
+    output[["flags"]] <- ifelse(chunk[2] == "", NA, chunk[2])
+
+    # If the argument was called with the include_subassay flags, parse all of the subassays
+    if (include_subassays) {
+      subassay_count <- as.numeric(chunk[3])
+
+      subassay_repeats <- 0
+      subassays <- list()
+      for (j in 1:subassay_count) {
+        # TODO: I don't know if this math holds up with > 2 subassays
+        subassay_start <- 4 + (j - 1)*2 + subassay_repeats
+        info <- unlist(stringr::str_split(chunk[subassay_start], pattern = "\t"))
+        names(info) <- c("number", "name", "endpoint", "raw")
+        subassays[[j]] <- as.list(info)
+        subassay_repeats <- as.numeric(chunk[subassay_start + 1])
+
+        subassays[[j]][["repeats"]] <- list()
+        for (i in 1:subassay_repeats) {
+          this_repeat <- unlist(stringr::str_split(chunk[subassay_start + 1 + i], pattern = "\t"))
+          names(this_repeat) <- c("id", "raw")
+          subassays[[j]][["repeats"]][[i]] <- as.list(this_repeat)
+        }
+      }
+      output[["subassays"]] <- list(subassays)
+    }
+    return(output)
+  }
+
+
+  assays <- purrr::map_dfr(chunks, ~ parse_assay(., include_subassays))
+  assays_clean <- dplyr::mutate(assays,
+                                datetime = lubridate::dmy_hms(paste(sample_date, sample_time)),
+                                sample_type = dplyr::case_when(
+                                  sample_type == "C" ~ "Control",
+                                  sample_type == "S" ~ "Sample",
+                                  TRUE ~ as.character(NA)),
+                                instrument = paste(version$instrument, version$serial),
+                                filename = version$path
+  )
+
+  # Reorder the columns
+  assays_clean <- dplyr::select(assays_clean, datetime, dplyr::everything(), -sample_date, -sample_time, -unknown1, -unknown2, -units2)
+  if (include_subassays) {
+    assays_clean <- dplyr::select(assays_clean, -subassays, dplyr::everything(), subassays)
+  }
+
+  return(assays_clean)
+}
