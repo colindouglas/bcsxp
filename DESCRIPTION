@@ -6,7 +6,7 @@ Authors@R:
            family = "Douglas",
            role = c("aut", "cre"),
            email = "colindouglas@gmail.com")
-Description: This package reads data exported from BCS XP coagulation analyzers in ASCII format ("S-files", typically with the filename S#########.BCSXp) and returns a tidy dataframe. Optionally, it can also return a list column of subassays, and the individual repeat values of those subassays.
+Description: This package reads data exported from BCS XP coagulation analyzers in ASCII format and returns a tidy dataframe. Optionally, it can also return a list column of subassays, and the individual repeat values of those subassays.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

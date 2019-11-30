@@ -34,7 +34,7 @@ devtools::install_github("colindouglas/bcsxp")
 * `filename`: The path to the file from which the data originated
 * `subassays`: If the function is called with `subassays = TRUE`, this is a list column containing the details of the assays-within-the-assay.
 
-### Reading an C-File
+### Reading a C-File
 `read_bcsxp(path, filetype = "C")` reads in a exported ASCII file containing data on calibration curves, typically named "C*yyyymmddn*.BCSXp". It returns a tibble with the following columns:
 
 * `datetime`: The date and time the calibration curve measurement finished
@@ -43,7 +43,7 @@ devtools::install_github("colindouglas/bcsxp")
 * `assay_name`: The short name identifying the assay
 * `reagent_lots`: The lot numbers of the reagents used to perform the assay, separated by spaces
 * `raw_unit`: The measurement units for the assay, often "secs" for clotting assays or "mE/min" from chromogenic assays
-* `concentration_unit`: The units of the assay output. Often "secs" or "%d.N." for factor assays.
+* `concentration_unit`: The units of the assay output. Often "secs" or "%d.N." for factor assays
 * `reagent_lots`: The lot numbers of the reagents used to perform the assay, separated by spaces
 * `flags`: These are warning or error flags that were raised during the calibration
 * `measurements`: The number of supporting points for the calibration curve
