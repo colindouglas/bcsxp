@@ -9,7 +9,6 @@ Data for the tests are not included in the repo.
 ## Installation 
 
 ```r
-# Install development version from GitHub:
 # install.packages("devtools")
 devtools::install_github("colindouglas/bcsxp")
 ```
