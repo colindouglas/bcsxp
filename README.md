@@ -66,4 +66,4 @@ devtools::install_github("colindouglas/bcsxp")
 * `raw`: The raw measurement, in units of `raw_unit`. If the assay is calibrated, this is the measurement before intepretation through the curve
 * `raw_unit`: The measurement units for the assay, often "secs" for clotting assays or "mE/min" from chromogenic assays
 * `instrument`: The name of the instrument and the instrument serial number, separated by a space
-* `wave`: A list column with two columns, `time` in seconds, and optical absorbance (`abs`) in mA
+* `wave`: A list column with two columns, `time` in seconds, and optical `abs`orbance in mA
