@@ -15,7 +15,8 @@ is_chunkstart <- function(x) {
   } else {
     return(
       line_split[2] %in% c("S", "C") | # matching in S files
-        grepl("[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}", line_split[2]) # matching in C files
+        grepl("[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}", line_split[2]) | # matching in C files
+        line_split[3] %in% c("S", "C") # matching in R files
     )
   }
 }

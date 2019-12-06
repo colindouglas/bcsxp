@@ -62,3 +62,19 @@ test_that("loading test file #3 (C-file) returns right number of columns", {
     ),
     11)
 })
+
+test_that("loading test file #4 (R-file) returns right number of columns", {
+  expect_equal(
+    ncol(
+      read_bcsxp(path = "../data/R201902203.BCSXp")
+    ),
+    15)
+})
+
+test_that("loading test file #4 (R-file) returns right number of rows", {
+  expect_equal(
+    nrow(
+      read_bcsxp(path = "../data/R201902203.BCSXp")
+    ),
+    766)
+})

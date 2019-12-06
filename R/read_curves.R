@@ -6,9 +6,6 @@
 #' @param header Manually pass along the file header so it's details can be returned
 #' @keywords BCS XP coagulation analyzer
 #' @export
-#' @examples
-#' read_curve(path = "data/C201911271.BCSXp", include_subassays = TRUE)
-
 
 read_curves <- function(chunks, header) {
 
@@ -24,12 +21,9 @@ read_curves <- function(chunks, header) {
     points <- tibble::tibble()
     for (i in 1:supporting_points) {
       point <- stringr::str_split(chunk[2 + 2*i], pattern = "\t")[[1]]
-      if(chunk[3 + 2*i] == "") {
-        point_flags <- NA
-      } else {
-        point_flags <- chunk[3 + 2*i]
-      }
 
+      # The flags for this specific calibration point
+      point_flags <- ifelse(chunk[3 + 2*i] == "", NA, chunk[3 + 2*i])
       names(point) <- c("concentration", "raw", "calibrator_lot")
       point <- as.list(point)
       point$concentration <- as.numeric(point$concentration)
@@ -38,8 +32,7 @@ read_curves <- function(chunks, header) {
       points <- dplyr::bind_rows(points, point)
     }
     output <- as.list(assay_info)
-    output[["flags"]] <- flags
-    # output[["measurements"]] <- supporting_points
+    output[["flags"]] <- ifelse(flags == "", NA, flags)
     output[["points"]] <- list(points)
 
     tibble::as_tibble(output)
