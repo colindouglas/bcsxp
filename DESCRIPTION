@@ -14,7 +14,8 @@ Imports:
         dplyr,
         purrr,
         stringr,
-        lubridate
+        lubridate,
+        tibble
 RoxygenNote: 7.0.1
 Suggests: 
     testthat (>= 2.1.0)

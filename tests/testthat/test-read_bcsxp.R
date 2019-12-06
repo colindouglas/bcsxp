@@ -60,5 +60,5 @@ test_that("loading test file #3 (C-file) returns right number of columns", {
     ncol(
       read_bcsxp(path = "../data/C201712072.BCSXp")
     ),
-    12)
+    11)
 })

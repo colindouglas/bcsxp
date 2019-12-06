@@ -21,7 +21,7 @@ read_curves <- function(chunks, header) {
     flags <- chunk[[2]]
     supporting_points <- as.integer(chunk[3])
 
-    points <- list()
+    points <- tibble::tibble()
     for (i in 1:supporting_points) {
       point <- stringr::str_split(chunk[2 + 2*i], pattern = "\t")[[1]]
       if(chunk[3 + 2*i] == "") {
@@ -34,15 +34,15 @@ read_curves <- function(chunks, header) {
       point <- as.list(point)
       point$concentration <- as.numeric(point$concentration)
       point$raw <- as.numeric(point$raw)
-      points[[i]] <- point
-      points[[i]]["flags"] <- point_flags
+      point$flags <- point_flags
+      points <- dplyr::bind_rows(points, point)
     }
     output <- as.list(assay_info)
     output[["flags"]] <- flags
-    output[["measurements"]] <- supporting_points
+    # output[["measurements"]] <- supporting_points
     output[["points"]] <- list(points)
 
-    return(output)
+    tibble::as_tibble(output)
   }
 
   curves <- purrr::map_dfr(chunks, ~ parse_curve(.))

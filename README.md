@@ -6,10 +6,9 @@ Currently, the package is not able to read raw data ("R-files") or data exported
 
 Data for the tests are not included in the repo.
 
-## Installation 
+## Installation (from Github)
 
 ```r
-# Install development version from GitHub:
 # install.packages("devtools")
 devtools::install_github("colindouglas/bcsxp")
 ```
@@ -25,11 +24,11 @@ devtools::install_github("colindouglas/bcsxp")
 * `assay_name`: The short name identifying the assay
 * `reagent_lots`: The lot numbers of the reagents used to perform the assay, separated by spaces
 * `raw_unit`: The measurement units for the assay, often "secs" for clotting assays or "mE/min" from chromogenic assays
-* `result_unit`: The units of the assay output. Often "secs" or "%d.N." for factor assays.
+* `result_unit`: The units of the assay output. Often "secs" or "%d.N." for factor assays
 * `raw`: The raw measurement, in units of `raw_unit`. If the assay is calibrated, this is the measurement before intepretation through the curve
 * `calibration_curve`: The calibration curve through which the raw measurement is interpreted
 * `result`: The output of the assay, in units of `result_unit`. If the assay is calibrated, this is the `raw` interpreted through `calibration_curve`
-* `flags`: These are warning or error flags that the assay raised
+* `flags`: These are warning or error flags raised during the assay
 * `instrument`: The name of the instrument and the instrument serial number, separated by a space
 * `filename`: The path to the file from which the data originated
 * `subassays`: If the function is called with `subassays = TRUE`, this is a list column containing the details of the assays-within-the-assay.

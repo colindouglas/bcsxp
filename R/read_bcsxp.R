@@ -11,7 +11,7 @@
 #' read_bcsxp(path = "data/S201911271.BCSXp", include_subassays = TRUE)
 
 
-read_bcsxp <- function(path, filetype = "guess", include_subassays = FALSE) {
+ read_bcsxp <- function(path, filetype = "guess", include_subassays = FALSE) {
   if (file.exists(path)) {
     file <- readLines(path, warn = FALSE) # Suppress warnings because the last line is always malformed
   } else {

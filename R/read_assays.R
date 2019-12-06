@@ -20,35 +20,35 @@ read_assays <- function(chunks, include_subassays = FALSE, header) {
     names(assay_info) <- c("sample_name", "sample_type", "unknown1", "sample_date", "sample_time",
                            "assay_number", "assay_name", "reagent_lots", "raw_unit",
                            "result_unit", "units2", "unknown2", "raw", "calibration_curve", "result")
-    output <- as.list(assay_info)
+    output <- tibble::as_tibble(as.list(assay_info))
 
     # Second line is assay flags
-    output[["flags"]] <- ifelse(chunk[2] == "", NA, chunk[2])
+    output$flags <- ifelse(chunk[2] == "", NA, chunk[2])
 
     # If the argument was called with the include_subassay flags, parse all of the subassays
     if (include_subassays) {
       subassay_count <- as.numeric(chunk[3])
-
       subassay_repeats <- 0
-      subassays <- list()
+      subassays <- tibble::tibble()
       for (j in 1:subassay_count) {
         # TODO: I don't know if this math holds up with > 2 subassays
         subassay_start <- 4 + (j - 1)*2 + subassay_repeats
         info <- unlist(stringr::str_split(chunk[subassay_start], pattern = "\t"))
         names(info) <- c("number", "name", "endpoint", "raw")
-        subassays[[j]] <- as.list(info)
+        subassays <- dplyr::bind_rows(subassays, as.list(info))
         subassay_repeats <- as.numeric(chunk[subassay_start + 1])
 
-        subassays[[j]][["repeats"]] <- list()
+        repeats <- tibble::tibble()
         for (i in 1:subassay_repeats) {
           this_repeat <- unlist(stringr::str_split(chunk[subassay_start + 1 + i], pattern = "\t"))
           names(this_repeat) <- c("id", "raw")
-          subassays[[j]][["repeats"]][[i]] <- as.list(this_repeat)
+          repeats <- dplyr::bind_rows(repeats, this_repeat)
         }
+        subassays <- dplyr::mutate(subassays, repeats = list(repeats))
       }
-      output[["subassays"]] <- list(subassays)
+      output <- dplyr::mutate(output, subassays = list(subassays))
     }
-    return(output)
+    output
   }
 
 
