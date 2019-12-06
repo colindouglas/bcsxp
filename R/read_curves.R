@@ -34,7 +34,7 @@ read_curves <- function(chunks, header) {
       point <- as.list(point)
       point$concentration <- as.numeric(point$concentration)
       point$raw <- as.numeric(point$raw)
-      point$flags <- point_flags
+      point$flags <- ifelse(point_flags == "", NA, point_flags)
       points <- dplyr::bind_rows(points, point)
     }
     output <- as.list(assay_info)
