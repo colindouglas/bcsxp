@@ -2,7 +2,7 @@
 #'
 #' This function reads an ASCII-formated calibration export file ("C-files") from a BCS XP coagulation analyzer
 #' and returns the calibration data results into a tidy tibble.
-#' @param path Path to the *.BCSXp file
+#' @param chunks A list of text from BCS XP ASCII export files, broken up into chunks
 #' @param header Manually pass along the file header so it's details can be returned
 #' @keywords BCS XP coagulation analyzer
 #' @export

@@ -6,10 +6,9 @@
 #' @param filetype The type of file to be read. One of c("S", "C", or "guess").
 #' @param include_subassays Adds a subassay list column to the output. Defaults to FALSE
 #' @keywords BCS XP coagulation analyzer
+#' @importFrom graphics points
+#' @importFrom utils tail
 #' @export
-#' @examples
-#' read_bcsxp(path = "data/S201911271.BCSXp", include_subassays = TRUE)
-
 
  read_bcsxp <- function(path, filetype = "guess", include_subassays = FALSE) {
   if (file.exists(path)) {

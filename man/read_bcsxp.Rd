@@ -17,9 +17,6 @@ read_bcsxp(path, filetype = "guess", include_subassays = FALSE)
 This function reads an ASCII-formated sample export file ("S-files") from a BCS XP coagulation analyzer
 and returns the assay results into a tidy tibble.
 }
-\examples{
-read_bcsxp(path = "data/S201911271.BCSXp", include_subassays = TRUE)
-}
 \keyword{BCS}
 \keyword{XP}
 \keyword{analyzer}

@@ -7,18 +7,15 @@
 read_assays(chunks, include_subassays = FALSE, header)
 }
 \arguments{
+\item{chunks}{A list of text from BCS XP ASCII export files, broken up into chunks}
+
 \item{include_subassays}{Adds a subassay list column to the output. Defaults to FALSE}
 
 \item{header}{Manually pass along the file header so it's details can be returned}
-
-\item{path}{Path to the *.BCSXp file}
 }
 \description{
 This function reads an ASCII-formated sample export file ("S-files") from a BCS XP coagulation analyzer
 and returns the assay results into a tidy tibble.
-}
-\examples{
-read_bcsxp(path = "data/S201911271.BCSXp", include_subassays = TRUE)
 }
 \keyword{BCS}
 \keyword{XP}

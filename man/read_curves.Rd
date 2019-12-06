@@ -7,16 +7,13 @@
 read_curves(chunks, header)
 }
 \arguments{
-\item{header}{Manually pass along the file header so it's details can be returned}
+\item{chunks}{A list of text from BCS XP ASCII export files, broken up into chunks}
 
-\item{path}{Path to the *.BCSXp file}
+\item{header}{Manually pass along the file header so it's details can be returned}
 }
 \description{
 This function reads an ASCII-formated calibration export file ("C-files") from a BCS XP coagulation analyzer
 and returns the calibration data results into a tidy tibble.
-}
-\examples{
-read_curve(path = "data/C201911271.BCSXp", include_subassays = TRUE)
 }
 \keyword{BCS}
 \keyword{XP}

@@ -2,7 +2,7 @@
 #'
 #' This function reads an ASCII-formated raw data file ("R-files") from a BCS XP coagulation analyzer
 #' and returns the details on the assay, as well as a list column that contains absorbance vs. time curves
-#' @param path Path to the *.BCSXp file
+#' @param chunks A list of text from BCS XP ASCII export files, broken up into chunks
 #' @param header Manually pass along the file header so it's details can be returned
 #' @keywords BCS XP coagulation analyzer
 #' @export

@@ -2,13 +2,11 @@
 #'
 #' This function reads an ASCII-formated sample export file ("S-files") from a BCS XP coagulation analyzer
 #' and returns the assay results into a tidy tibble.
-#' @param path Path to the *.BCSXp file
+#' @param chunks A list of text from BCS XP ASCII export files, broken up into chunks
 #' @param include_subassays Adds a subassay list column to the output. Defaults to FALSE
 #' @param header Manually pass along the file header so it's details can be returned
 #' @keywords BCS XP coagulation analyzer
 #' @export
-#' @examples
-#' read_bcsxp(path = "data/S201911271.BCSXp", include_subassays = TRUE)
 
 read_assays <- function(chunks, include_subassays = FALSE, header) {
 
