@@ -2,9 +2,7 @@
 
 This package reads ASCII sample files ("S-files"), calibration files ("C-files"), and raw data ("R-files") exported from BCS XP coagulation analyzers, and returns a tidy row-wise dataframe. It can also read the subassays for each assay, and return a list column containing the results.
 
-Currently, the package is not able to read data exported in XML format.
-
-Data for the tests are not included in the repo.
+Currently, the package is not able to read data exported in XML format. Data for the tests are not included in the repo due to rights issues.
 
 ## Installation (from Github)
 
@@ -14,8 +12,11 @@ devtools::install_github("colindouglas/bcsxp")
 ```
 ## Usage
 
+### Guess Filetype and Read
+`read_bcsxp(path, filetype = "guess")` attempts to guess the type of file based on it's header and path and reads it with the appropriate method. By default, it does not attempt to parse the subassays for each assay in an S-file.
+
 ### Reading an S-File
-`read_bcsxp(path, filetype = "S")` reads in a exported ASCII file containing data on samples and controls, typically named "S*yyyymmddn*.BCSXp". It returns a tibble with the following columns:
+`read_bcsxp(path, filetype = "S", include_subassays = FALSE)` reads in a exported ASCII file containing data on samples and controls, typically named "S*yyyymmddn*.BCSXp". It returns a tibble with the following columns:
 
 * `datetime`: The date and time the assay finished
 * `sample_name`: The name of the sample on the instrument. For controls, it is the control lot number
@@ -31,7 +32,7 @@ devtools::install_github("colindouglas/bcsxp")
 * `flags`: These are warning or error flags raised during the assay
 * `instrument`: The name of the instrument and the instrument serial number, separated by a space
 * `filename`: The path to the file from which the data originated
-* `subassays`: If the function is called with `subassays = TRUE`, this is a list column containing the details of the assays-within-the-assay.
+* `subassays`: If the function is called with `include_subassays = TRUE`, this is a list column containing the details of the assays-within-the-assay. This column is excluded by default
 
 ### Reading a C-File
 `read_bcsxp(path, filetype = "C")` reads in a exported ASCII file containing data on calibration curves, typically named "C*yyyymmddn*.BCSXp". It returns a tibble with the following columns:
