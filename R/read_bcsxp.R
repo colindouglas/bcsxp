@@ -33,13 +33,13 @@
     )
 
     # If the header specifies file type, move on
-    if (firstchar_header %in% c("s", "c")) {
+    if (firstchar_header %in% c("s", "c", "r")) {
       filetype <- firstchar_header
     } else {
       # If the header doesn't specify filetype, warn and try to guess it from the path
       filename <- tail(stringr::str_split(path, pattern = "/")[[1]], 1)
       firstchar_filename <- tolower(substring(filename, first = 1, last = 1))
-      if (firstchar_filename %in% c("s", "c")) {
+      if (firstchar_filename %in% c("s", "c", "r")) {
         filetype <- firstchar_filename
         warning("Guessing file type from path: ", path)
       } else {
@@ -62,15 +62,22 @@
       chunk_starts[i]:chunk_ends[i]
       ]
   }
-
-  if (tolower(filetype) == "s") {
+# use read_assays() to read S-files
+  if (filetype == "s") {
     return(
       read_assays(chunks, include_subassays, header)
     )
   }
-  if (tolower(filetype) == "c") {
+  # Use read_curves to read C-files
+  if (filetype == "c") {
     return(
       read_curves(chunks, header)
+    )
+  }
+  # Ise read_rawfiles to read R-files
+  if (filetype == "r") {
+    return(
+      read_rawfile(chunks, header)
     )
   }
 
