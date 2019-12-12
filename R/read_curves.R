@@ -5,6 +5,7 @@
 #' @param chunks A list of text from BCS XP ASCII export files, broken up into chunks
 #' @param header Manually pass along the file header so it's details can be returned
 #' @keywords BCS XP coagulation analyzer
+#' @importFrom rlang .data
 #' @export
 
 read_curves <- function(chunks, header) {
@@ -41,11 +42,11 @@ read_curves <- function(chunks, header) {
   curves <- purrr::map_dfr(chunks, ~ parse_curve(.))
 
   curves_clean <- dplyr::mutate(curves,
-                                datetime = lubridate::dmy_hms(paste(curve_date, curve_time)),
+                                datetime = lubridate::dmy_hms(paste(.data$curve_date, .data$curve_time)),
                                 instrument = paste(header$instrument, header$serial),
                                 filename = header$path)
-  curves_clean <- dplyr::select(curves_clean, datetime, dplyr::everything(), -curve_date, -curve_time, -units2, -repeats)
-  curves_clean <- dplyr::select(curves_clean, -points, dplyr::everything(), points)
+  curves_clean <- dplyr::select(curves_clean, .data$datetime, dplyr::everything(), -.data$curve_date, -.data$curve_time, -.data$units2, -.data$repeats)
+  curves_clean <- dplyr::select(curves_clean, -.data$points, dplyr::everything(), .data$points)
 
   return(curves_clean)
 

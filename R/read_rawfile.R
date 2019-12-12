@@ -5,6 +5,7 @@
 #' @param chunks A list of text from BCS XP ASCII export files, broken up into chunks
 #' @param header Manually pass along the file header so it's details can be returned
 #' @keywords BCS XP coagulation analyzer
+#' @importFrom rlang .data
 #' @export
 
 read_rawfile <- function(chunks, header) {
@@ -50,7 +51,7 @@ read_rawfile <- function(chunks, header) {
   raw <- purrr::map_dfr(chunks, ~ parse_raw(.))
 
   raw_clean <- dplyr::mutate(raw,
-                                datetime = lubridate::dmy_hms(paste(assay_date, assay_time)),
+                                datetime = lubridate::dmy_hms(paste(.data$assay_date, .data$assay_time)),
                                 sample_type = dplyr::case_when(
                                   sample_type == "C" ~ "Control",
                                   sample_type == "S" ~ "Sample",
@@ -60,7 +61,7 @@ read_rawfile <- function(chunks, header) {
   )
 
   # Reorder the columns
-  raw_clean <- dplyr::select(raw_clean, datetime, dplyr::everything(), -assay_date, -assay_time, -unknown4, -unknown5)
-  raw_clean <- dplyr::select(raw_clean, -wave, dplyr::everything())
+  raw_clean <- dplyr::select(raw_clean, .data$datetime, dplyr::everything(), -.data$assay_date, -.data$assay_time, -.data$unknown4, -.data$unknown5)
+  raw_clean <- dplyr::select(raw_clean, .data$wave, dplyr::everything())
 
 }

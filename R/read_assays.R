@@ -6,10 +6,10 @@
 #' @param include_subassays Adds a subassay list column to the output. Defaults to FALSE
 #' @param header Manually pass along the file header so it's details can be returned
 #' @keywords BCS XP coagulation analyzer
+#' @importFrom rlang .data
 #' @export
 
 read_assays <- function(chunks, include_subassays = FALSE, header) {
-
   # Parse a chunk (representing a single assay) into a tidy row
   parse_assay <- function(chunk, include_subassays = FALSE) {
 
@@ -52,7 +52,7 @@ read_assays <- function(chunks, include_subassays = FALSE, header) {
 
   assays <- purrr::map_dfr(chunks, ~ parse_assay(., include_subassays))
   assays_clean <- dplyr::mutate(assays,
-                                datetime = lubridate::dmy_hms(paste(sample_date, sample_time)),
+                                datetime = lubridate::dmy_hms(paste(.data$sample_date, .data$sample_time)),
                                 sample_type = dplyr::case_when(
                                   sample_type == "C" ~ "Control",
                                   sample_type == "S" ~ "Sample",
@@ -62,9 +62,9 @@ read_assays <- function(chunks, include_subassays = FALSE, header) {
   )
 
   # Reorder the columns
-  assays_clean <- dplyr::select(assays_clean, datetime, dplyr::everything(), -sample_date, -sample_time, -unknown1, -unknown2, -units2)
+  assays_clean <- dplyr::select(assays_clean, .data$datetime, dplyr::everything(), -.data$sample_date, -.data$sample_time, -.data$unknown1, -.data$unknown2, -.data$units2)
   if (include_subassays) {
-    assays_clean <- dplyr::select(assays_clean, -subassays, dplyr::everything(), subassays)
+    # assays_clean <- dplyr::select(assays_clean, -.data$subassays, dplyr::everything(), .data$subassays)
   }
 
   return(assays_clean)

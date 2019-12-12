@@ -16,7 +16,7 @@ devtools::install_github("colindouglas/bcsxp")
 `read_bcsxp(path, filetype = "guess")` attempts to guess the type of file based on it's header and path and reads it with the appropriate method. By default, it does not attempt to parse the subassays for each assay in an S-file.
 
 ### Reading an S-File
-`read_bcsxp(path, filetype = "S", include_subassays = FALSE)` reads in a exported ASCII file containing data on samples and controls, typically named "S*yyyymmddn*.BCSXp". It returns a tibble with the following columns:
+`read_bcsxp(path, filetype = "S", include_subassays = FALSE)` reads an exported ASCII file containing data on samples and controls, typically named "S*yyyymmddn*.BCSXp". It returns a tibble with the following columns:
 
 * `datetime`: The date and time the assay finished
 * `sample_name`: The name of the sample on the instrument. For controls, it is the control lot number
@@ -35,7 +35,7 @@ devtools::install_github("colindouglas/bcsxp")
 * `subassays`: If the function is called with `include_subassays = TRUE`, this is a list column containing the details of the assays-within-the-assay. This column is excluded by default
 
 ### Reading a C-File
-`read_bcsxp(path, filetype = "C")` reads in a exported ASCII file containing data on calibration curves, typically named "C*yyyymmddn*.BCSXp". It returns a tibble with the following columns:
+`read_bcsxp(path, filetype = "C")` reads an exported ASCII file containing data on calibration curves, typically named "C*yyyymmddn*.BCSXp". It returns a tibble with the following columns:
 
 * `datetime`: The date and time the calibration curve measurement finished
 * `curve_name`: The name of the calibration curve. 
@@ -52,7 +52,7 @@ devtools::install_github("colindouglas/bcsxp")
 * `points`: A list column that contains results for the individual points in the calibration curve
 
 ### Reading a R-File
-`read_bcsxp(path, filetype = "R")` reads in a exported ASCII file containing raw absorbance vs. time data for each assay, typically named "R*yyyymmddn*.BCSXp". It returns a tibble with the following columns:
+`read_bcsxp(path, filetype = "R")` reads an exported ASCII file containing raw absorbance vs. time data for each assay, typically named "R*yyyymmddn*.BCSXp". It returns a tibble with the following columns:
 
 * `datetime`: The date and time the calibration curve measurement finished
 * `id`: Unique identifier for each assay
@@ -67,4 +67,5 @@ devtools::install_github("colindouglas/bcsxp")
 * `raw`: The raw measurement, in units of `raw_unit`. If the assay is calibrated, this is the measurement before intepretation through the curve
 * `raw_unit`: The measurement units for the assay, often "secs" for clotting assays or "mE/min" from chromogenic assays
 * `instrument`: The name of the instrument and the instrument serial number, separated by a space
+* `filename`: The path to the file from which the data originated
 * `wave`: A list column with two columns, `time` in seconds, and optical `abs`orbance in mA
