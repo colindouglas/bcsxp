@@ -49,25 +49,20 @@
   }
 
   # Which element indices are the starts of chunks
-  chunk_starts <- which(sapply(file, is_chunkstart, USE.NAMES = FALSE))
+  chunk_starts <- which(unlist(is_chunkstart(file)))
 
   # Which element indices are the last line of a chunk
   chunk_ends <- as.integer(c(tail(chunk_starts - 1, -1), length(file)-1))
 
-  # Construct a list of chunks to map over
-  chunks <- list()
-  for (i in 1:length(chunk_starts)) {
-    chunks[[i]] <- file[
-      chunk_starts[i]:chunk_ends[i]
-      ]
-  }
+  chunks <- purrr::map2(chunk_starts, chunk_ends, ~ file[.x:.y])
+
 # use read_assays() to read S-files
   if (filetype == "s") {
     return(
       read_assays(chunks, include_subassays, header)
     )
   }
-  # Use read_curves to read C-files
+  # Use read_curves() to read C-files
   if (filetype == "c") {
     return(
       read_curves(chunks, header)

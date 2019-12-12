@@ -9,14 +9,16 @@
 #' @export
 
 is_chunkstart <- function(x) {
-  line_split <- unlist(stringr::str_split(x, pattern = "\t"))
-  if (length(line_split) < 2) {
+  line_split <- strsplit(x, split = "\t")
+  purrr::map(line_split, function(y) {
+  if (length(y) < 2) {
     return(FALSE)
   } else {
     return(
-      line_split[2] %in% c("S", "C") | # matching in S files
-        grepl("[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}", line_split[2]) | # matching in C files
-        line_split[3] %in% c("S", "C") # matching in R files
+      y[2] %in% c("S", "C") | # matching in S files
+        grepl("[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}", y[2]) | # matching in C files
+        y[3] %in% c("S", "C") # matching in R files
     )
   }
+})
 }

@@ -36,12 +36,13 @@ read_rawfile <- function(chunks, header) {
     # Eighth line describes how many individual measurements there are in the curve
     raw_measurements <- as.numeric(chunk[8])
 
-    measurements <- tibble::tibble()
-    for (i in 1:raw_measurements) {
-      measurement <- stringr::str_split(chunk[8 + i], pattern = "\t", simplify = TRUE)
-      names(measurement) <- c("time", "abs")
-      measurements <- dplyr::bind_rows(measurements, as.list(measurement))
-    }
+    measurements <- purrr::map_dfr(
+      1:raw_measurements,
+      function(i) {
+        out <- stringr::str_split(chunk[8 + i], pattern = "\t")[[1]]
+        names(out) <- c("time", "abs")
+        return(as.list(out))
+      })
 
     output$wave <- list(measurements)
     return(output)
