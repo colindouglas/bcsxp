@@ -8,6 +8,8 @@
 #' @keywords BCS XP coagulation analyzer
 #' @importFrom graphics points
 #' @importFrom utils tail
+#' @importFrom stringr str_split
+#' @importFrom purrr map2
 #' @export
 
  read_bcsxp <- function(path, filetype = "guess", include_subassays = FALSE) {
@@ -18,7 +20,7 @@
   }
 
   # Get file details from the header
-  header <- unlist(stringr::str_split(file[1], pattern = "\t"))
+  header <- unlist(str_split(file[1], pattern = "\t"))
   names(header) <- c("instrument", "filetype", "serial", "software_version", "unknown3")
   header <- c(header, path = path)
   header <- as.list(header)
@@ -36,7 +38,7 @@
       filetype <- firstchar_header
     } else {
       # If the header doesn't specify filetype, warn and try to guess it from the path
-      filename <- tail(stringr::str_split(path, pattern = "/")[[1]], 1)
+      filename <- tail(str_split(path, pattern = "/")[[1]], 1)
       firstchar_filename <- tolower(substring(filename, first = 1, last = 1))
       if (firstchar_filename %in% c("s", "c", "r")) {
         filetype <- firstchar_filename
@@ -54,7 +56,7 @@
   # Which element indices are the last line of a chunk
   chunk_ends <- as.integer(c(tail(chunk_starts - 1, -1), length(file)-1))
 
-  chunks <- purrr::map2(chunk_starts, chunk_ends, ~ file[.x:.y])
+  chunks <- map2(chunk_starts, chunk_ends, ~ file[.x:.y])
 
 # use read_assays() to read S-files
   if (filetype == "s") {

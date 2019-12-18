@@ -6,6 +6,11 @@
 #' @param header Manually pass along the file header so it's details can be returned
 #' @keywords BCS XP coagulation analyzer
 #' @importFrom rlang .data
+#' @importFrom stringr str_split
+#' @importFrom tibble as_tibble
+#' @importFrom purrr map_dfr
+#' @importFrom dplyr mutate everything select case_when
+#' @importFrom lubridate dmy_hms
 #' @export
 
 read_rawfile <- function(chunks, header) {
@@ -14,10 +19,10 @@ read_rawfile <- function(chunks, header) {
   parse_raw <- function(chunk) {
 
     # The first line is the descriptive data for the assay
-    raw_info <- stringr::str_split(chunk[1], pattern = "\t", simplify = TRUE)
+    raw_info <-str_split(chunk[1], pattern = "\t", simplify = TRUE)
     names(raw_info) <- c("id", "sample_name", "sample_type", "assay_number",
                            "assay_name", "assay_date", "assay_time")
-    output <- tibble::as_tibble(as.list(raw_info))
+    output <- as_tibble(as.list(raw_info))
 
     # The second line is the reagent lots
     output$reagent_lots <- chunk[2]
@@ -29,16 +34,16 @@ read_rawfile <- function(chunks, header) {
     output$unknown5 <- chunk[5]
 
     # Sixth line describes how the measurements were made
-    raw_result <- stringr::str_split(chunk[6], pattern = "\t", simplify = TRUE)
+    raw_result <- str_split(chunk[6], pattern = "\t", simplify = TRUE)
     names(raw_result) <- c("detection method", "raw", "raw_unit")
     output <- dplyr::bind_cols(output, as.list(raw_result))
 
     # Eighth line describes how many individual measurements there are in the curve
     raw_measurements <- as.numeric(chunk[8])
 
-    measurements <- purrr::map_dfr(1:raw_measurements,
+    measurements <- map_dfr(1:raw_measurements,
       function(i) {
-        out <- stringr::str_split(chunk[8 + i], pattern = "\t")[[1]]
+        out <- str_split(chunk[8 + i], pattern = "\t")[[1]]
         names(out) <- c("time", "abs")
         return(as.list(out))
       })
@@ -48,20 +53,20 @@ read_rawfile <- function(chunks, header) {
 
   }
 
-  raw <- purrr::map_dfr(chunks, ~ parse_raw(.))
+  raw <- map_dfr(chunks, ~ parse_raw(.))
 
-  raw_clean <- dplyr::mutate(raw,
-                                datetime = lubridate::dmy_hms(paste(.data$assay_date, .data$assay_time)),
-                                sample_type = dplyr::case_when(
-                                  sample_type == "C" ~ "Control",
-                                  sample_type == "S" ~ "Sample",
-                                  TRUE ~ as.character(NA)),
-                                instrument = paste(header$instrument, header$serial),
-                                filename = header$path
+  raw_clean <- mutate(raw,
+                      datetime = dmy_hms(paste(.data$assay_date, .data$assay_time)),
+                      sample_type = case_when(
+                        sample_type == "C" ~ "Control",
+                        sample_type == "S" ~ "Sample",
+                        TRUE ~ as.character(NA)),
+                      instrument = paste(header$instrument, header$serial),
+                      filename = header$path
   )
 
   # Reorder the columns
-  raw_clean <- dplyr::select(raw_clean, .data$datetime, dplyr::everything(), -.data$assay_date, -.data$assay_time, -.data$unknown4, -.data$unknown5)
-  raw_clean <- dplyr::select(raw_clean, .data$wave, dplyr::everything())
+  raw_clean <- select(raw_clean, .data$datetime, everything(), -.data$assay_date, -.data$assay_time, -.data$unknown4, -.data$unknown5)
+  raw_clean <- select(raw_clean, .data$wave, everything())
 
 }

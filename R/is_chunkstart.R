@@ -6,11 +6,12 @@
 #' Returns TRUE or FALSE
 #' @param x A character string
 #' @keywords BCS XP coagulation analyzer
+#' @importFrom purrr map
 #' @export
 
 is_chunkstart <- function(x) {
   line_split <- strsplit(x, split = "\t")
-  purrr::map(line_split, function(y) {
+  map(line_split, function(y) {
   if (length(y) < 2) {
     return(FALSE)
   } else {
