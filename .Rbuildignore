@@ -1,4 +1,5 @@
 ^bcsxp\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
-^tests\data$
+^tests$
+TODO

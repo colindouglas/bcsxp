@@ -1,12 +1,12 @@
 Package: bcsxp
 Title: Tidy Exported ASCII Data from BCS XP Coagulation Analyzers
-Version: 0.1.0.9000
+Version: 0.1.0
 Authors@R: 
     person(given = "Colin",
            family = "Douglas",
            role = c("aut", "cre"),
            email = "colindouglas@gmail.com")
-Description: This package reads data exported from BCS XP coagulation analyzers in ASCII format and returns a tidy dataframe. Optionally, it can also return a list column of subassays, and the individual repeat values of those subassays.
+Description: Reads data exported from BCS XP coagulation analyzers in ASCII format and returns a tidy dataframe. Optionally, it can also return a list column of subassays, and the individual repeat values of those subassays.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
