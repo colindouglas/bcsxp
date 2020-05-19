@@ -1,5 +1,10 @@
 # Read BCS XP Results Files
 
+  <!-- badges: start -->
+  [![R build status](https://github.com/colindouglas/bcsxp/workflows/R-CMD-check/badge.svg)](https://github.com/colindouglas/bcsxp/actions)
+  [![GitHub commit](https://img.shields.io/github/last-commit/colindouglas/bcsxp)](https://github.com/colindouglas/bcsxp/commit/master)
+  <!-- badges: end -->
+  
 This package reads ASCII sample files ("S-files"), calibration files ("C-files"), and raw data ("R-files") exported from BCS XP coagulation analyzers, and returns a tidy row-wise dataframe. It can also read the subassays for each assay, and return a list column containing the results.
 
 Currently, the package is not able to read data exported in XML format. Data for the tests are not included in the repo due to rights issues.
