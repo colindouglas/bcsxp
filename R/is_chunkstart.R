@@ -12,14 +12,14 @@
 is_chunkstart <- function(x) {
   line_split <- strsplit(x, split = "\t")
   map(line_split, function(y) {
-  if (length(y) < 2) {
-    return(FALSE)
-  } else {
-    return(
-      y[2] %in% c("S", "C") | # matching in S files
-        grepl("[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}", y[2]) | # matching in C files
-        y[3] %in% c("S", "C") # matching in R files
-    )
-  }
-})
+    if (length(y) < 2) {
+      return(FALSE)
+    } else {
+      return(
+        y[2] == "S" | y[2] == "C" | # matching in S files
+          y[3] == "S" | y[3] == "C" | # matching in R files
+          grepl("[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}", y[2]) # matching in C files
+      )
+    }
+  })
 }
